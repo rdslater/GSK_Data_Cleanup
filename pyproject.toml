@@ -7,4 +7,6 @@ requires-python = ">=3.14"
 dependencies = [
     "dotenv>=0.9.9",
     "flywheel-sdk>=23.0.0",
+    "openpyxl>=3.1.5",
+    "pandas>=3.0.6",
 ]

@@ -1,6 +1,7 @@
 import flywheel
 import os
 from dotenv import load_dotenv
+import pandas as pd
 
 def find_file_in_subject(
     fw_client: flywheel.Client,
@@ -17,12 +18,11 @@ def find_file_in_subject(
     """
     try:
         # Resolve project and subject directly via SDK pathing
-        project = fw_client.projects.find_first(f'label == "{project_label}"')
+        project = fw_client.projects.find_first(f'label="{project_label}"')
         if not project:
             return None
-
-        subject = fw_client.subjects.find_first(
-            f'project == "{project.id}" and label == "{subject_label}"'
+        subject = project.subjects.find_first(
+           f'label="{subject_label}"'
         )
         if not subject:
             return None
@@ -58,6 +58,7 @@ def find_file_in_subject(
         return None
 
 def test(client,project_label="", subject_label="", filename=""):
+    data = load_xl("./GSK_EZRPE_missing.xlsx")
     out = find_file_in_subject(
             client,
             project_label,
@@ -65,10 +66,13 @@ def test(client,project_label="", subject_label="", filename=""):
             filename)
     print(out)
     return 0
+
+def load_xl(file_path):
+    data = pd.read_excel(file_path)
+    return data
+
 if __name__ == "__main__":
     load_dotenv()
-
-# Initialize Flywheel Client
     api_key = os.getenv("FLYWHEEL_API_KEY")
     if not api_key:
         raise ValueError(
